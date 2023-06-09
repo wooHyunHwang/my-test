@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Test8 {
 
@@ -8,6 +10,26 @@ public class Test8 {
 
         protected Option(String name) { this.name = name; }
         public String getName() { return this.name; }
+    }
+
+    public static class TT {
+        private Long parent;
+        private Long depth;
+        private Long key;
+        protected TT(Long parent, Long depth, Long key) {
+            this.parent = parent;
+            this.depth = depth;
+            this.key = key;
+        }
+
+        public Long getParent() { return this.parent; }
+        public Long getDepth() { return this.depth; }
+        public Long getKey() { return this.key; }
+
+        @Override
+        public String toString() {
+            return "parent : " + parent + " / key : " + key + "\n";
+        }
     }
 
     public static class Composite {
@@ -24,7 +46,64 @@ public class Test8 {
         public void printName() { System.err.println(this.name); }
     }
 
+    private static void dfs2(StringBuilder sb, Map<Long, Map<Long, List<TT>>> tTree, long depth, long parent) {
+
+        if (!tTree.containsKey(depth)) return;
+
+        Map<Long, List<TT>> tmap = tTree.get(depth);
+
+        tmap.forEach((p, tList) -> {
+            // 가진 부모 뎁스
+            if (tList == null || tList.isEmpty()) return;
+            if (parent != p) return;
+
+            for (TT tt : tList) {
+
+                sb.append(tt.key).append("\n");
+
+                dfs2(sb, tTree, depth + 1, tt.key);
+            }
+
+        });
+
+    }
+
     public static void main(String[] args) {
+
+        List<TT> t = new ArrayList<>();
+
+        t.add(new TT(0L, 1L, 1L));
+        t.add(new TT(1L, 2L, 2L));
+        t.add(new TT(1L, 2L, 3L));
+        t.add(new TT(3L, 3L, 4L));
+        t.add(new TT(3L, 3L, 5L));
+        t.add(new TT(4L, 4L, 6L));
+        t.add(new TT(4L, 4L, 7L));
+        t.add(new TT(6L, 5L, 8L));
+        t.add(new TT(6L, 5L, 9L));
+        t.add(new TT(7L, 5L, 10L));
+
+        Map<Long, Map<Long, List<TT>>> tTree = new HashMap<>();
+
+        for (TT tt : t) {
+            Map<Long, List<TT>> tmap = tTree.getOrDefault(tt.getDepth(), new HashMap<>());
+
+            List<TT> target = tmap.getOrDefault(tt.getParent(), new ArrayList<>());
+            target.add(tt);
+            tmap.put(tt.getParent(), target);
+
+            tTree.put(tt.getDepth(), tmap);
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        dfs2(sb, tTree, 1L, 0L);
+
+        System.err.println("################### T 츄리");
+        System.err.println(sb.toString());
+        System.err.println("################### T 츄리");
+
+
         //==================================================
         // Tree
         //==================================================
