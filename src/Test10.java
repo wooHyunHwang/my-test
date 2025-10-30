@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Test9 {
+public class Test10 {
     public static class Asd {
         public String str;
 

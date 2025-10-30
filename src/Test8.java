@@ -69,6 +69,13 @@ public class Test8 {
     }
 
     public static void main(String[] args) {
+        List<String> fileList = new ArrayList<>();
+        fileList.add("");
+
+        StringBuilder file = new StringBuilder();
+        for (int i = 0, size = fileList.size(); i < size; i++) {
+            file.append(i > 0 ? ", ?" : "?");
+        }
 
         List<TT> t = new ArrayList<>();
 
